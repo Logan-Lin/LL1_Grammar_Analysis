@@ -97,7 +97,7 @@ def scan_file(file_name):
     try:
         control("S")
         print("Input file {} valid".format(file_name))
-    except ValueError as e:
+    except (ValueError, KeyError) as e:
         print("Input file {} not valid, error at {}. \nDetail: {}".format(file_name, scan_index, e))
 
 
