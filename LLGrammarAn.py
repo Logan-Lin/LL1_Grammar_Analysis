@@ -21,8 +21,8 @@ def get_current_description(column="secondary"):
     Return current description based on current coding.
 
     :param column: string, Set the column to search for. Set to 'description' to search from original column.
-    :raise ValueError if can't find description based on current coding
-    :return desc: string, Description (identifier) current coding represented
+    :raise: ValueError if can't find description based on current coding
+    :return: string, Description (identifier) current coding represented
     """
     coding = coding_array[scan_index]
     desc = coding_df.loc[coding][column]

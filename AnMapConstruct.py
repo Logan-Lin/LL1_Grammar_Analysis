@@ -55,7 +55,7 @@ def get_first(non_t):
     Insert every formula's FIRST(a) into first_dict in the same time.
 
     :param non_t: str, non-terminal symbol.
-    :return: The non-terminal symbol's all FIRST(a) array.
+    :return: set, the non-terminal symbol's all FIRST(a) array.
     """
     # List 'first' is used to store the non-terminal symbol's all FIRST(a) array.
     first = set()
