@@ -1,0 +1,53 @@
+coding description secondary
+1 char
+2 int
+3 double
+4 float
+5 short
+6 long
+7 void
+8 bool
+9 for
+10 while
+11 switch
+12 do
+13 if
+14 else
+15 case
+16 continue
+17 break
+18 default
+19 return
+20 true
+21 false
+22 + +
+23 - -
+24 * *
+25 / /
+26 ;
+27 ,
+28 ( (
+29 ) )
+30 :
+31 >
+32 <
+33 = =
+34 {
+35 }
+36 [
+37 ]
+38 ++
+39 --
+40 ==
+41 <>
+42 >=
+43 <=
+44 /*
+45 */
+46 //
+47 **
+48 user_defined i
+49 unsigned_number i
+50 not_available
+51 invalid_identifier
+52 # #
