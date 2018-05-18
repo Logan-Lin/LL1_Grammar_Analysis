@@ -62,8 +62,9 @@ def control(start_function):
     while True:
         # Pop out top of the stack and get current scanning symbol from input series.
         stack_top = stack[-1]
-        del stack[-1]
         current = get_current_description()
+        print('[{0:20}]<-{1:}'.format(" ".join(stack), current))
+        del stack[-1]
 
         if not stack_top.isupper():
             # The top of the stack is not an upper character, which means it is a terminal symbol.
@@ -94,6 +95,7 @@ def scan_file(file_name):
     :param file_name: string, the file storing binary series outputted from lexical analysis
     """
     load_coding(file_name)
+    print("====Validating file {}====".format(file_name))
     try:
         control("S")
         print("Input file {} valid".format(file_name))

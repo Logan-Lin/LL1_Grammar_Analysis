@@ -33,9 +33,14 @@ def construct_first():
     """
     Construct all non-terminal symbols and formulas' FIRST(a) array.
     """
-    print("Constructing FIRST(a) array.")
     for non_t in grammar[~grammar.index.duplicated(keep='first')].index:
         get_first(non_t)
+
+    print("====FIRST(a) details====")
+    print('{0:15}{1:}'.format("Formula", "First(a)"))
+    for (non_t, formula), first in first_dict.items():
+        print('{0:2}-> {1:10}{{{2:}}}'.format(non_t, formula, ", ".join(first)))
+    print()
 
 
 def construct_follow(start_symbol='S'):
@@ -44,9 +49,14 @@ def construct_follow(start_symbol='S'):
 
     :param start_symbol: string, the start symbol of the grammar.
     """
-    print("Constructing FOLLOW(A) array.")
     for non_t in grammar[~grammar.index.duplicated(keep='first')].index:
         get_follow(non_t, start_symbol)
+
+    print("====FOLLOW(A) details====")
+    print('{0:6}{1:}'.format("Non-t", "FOLLOW(A)"))
+    for non_t, follow in follow_dict.items():
+        print('{0:6}{{{1:}}}'.format(non_t, ", ".join(follow)))
+    print()
 
 
 def get_first(non_t):
@@ -125,7 +135,6 @@ def construct_map():
     """
     Construct LL(1) analysis sheet and write into a csv file.
     """
-    print("Constructing analysis map.")
     # Gather all terminal symbol that would appear in a valid sentence.
     all_terminal = set()
     for first in first_dict.values():
@@ -154,10 +163,25 @@ def construct_map():
     # Write analysis sheet into csv file, using pandas.
     an_df = pd.DataFrame(an_matrix[1:], columns=an_matrix[0])
     an_df = an_df.set_index(["non-t"])
+    print("====Analysis sheet detail====")
+    print(an_df)
+    print()
     an_df.to_csv(os.path.join("data", "an_map.csv"), sep='`')
 
 
+def print_grammar():
+    """
+    Print out grammar formulas.
+    """
+    print("====Grammar details====")
+    for non_t in grammar.index:
+        formulas = get_all_formulas(non_t)
+        print("{0:2}-> {1:}".format(non_t, "|".join(list(formulas))))
+    print()
+
+
 if __name__ == "__main__":
+    print_grammar()
     construct_first()
     construct_follow()
     construct_map()
