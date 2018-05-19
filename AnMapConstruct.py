@@ -76,10 +76,11 @@ def get_first(non_t):
         formula_first = set()
         first_sym = formula.split(" ")[0]
         if first_sym.isupper():
-            # The first symbol of formula is an upper character, which means it is an non-terminal symbol.
-            # In this case, we recursively search for corresponding FIRST(a) array.
-            first |= get_first(first_sym)
-            formula_first |= get_first(first_sym)
+            if not first_sym == non_t:
+                # The first symbol of formula is an upper character, which means it is an non-terminal symbol.
+                # In this case, we recursively search for corresponding FIRST(a) array.
+                first |= get_first(first_sym)
+                formula_first |= get_first(first_sym)
         else:
             # The first symbol is not an upper character, which means it is an terminal symbol.
             # In this case, we directory store the symbol into array.
@@ -110,7 +111,7 @@ def get_follow(non_t, start_symbol='S'):
                     if not non_t == non_terminal:
                         # If the symbol is in the end of the formula,
                         # then add all FOLLOW(A) to the symbol's FOLLOW set.
-                        follow |= get_follow(non_terminal)
+                        follow |= get_follow(non_terminal, start_symbol=start_symbol)
                 else:
                     if formula_list[index + 1].isupper():
                         # If the follow of the symbol is an non-terminal-symbol,
@@ -121,7 +122,7 @@ def get_follow(non_t, start_symbol='S'):
                             # If the follow of the symbol is the end of the formula and can be inferred to empty,
                             # add the formula's corresponding non-terminal symbol's FOLLOW()
                             # to the symbol's FOLLOW set.
-                            follow |= get_follow(non_terminal)
+                            follow |= get_follow(non_terminal, start_symbol=start_symbol)
                     else:
                         # If the follow of the symbol is an terminal-symbol,
                         # directory add that symbol to its FOLLOW set.
