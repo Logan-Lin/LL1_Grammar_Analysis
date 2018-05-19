@@ -11,6 +11,8 @@ first_dict = dict()
 # The dict's form is non-terminal -> FOLLOW(a) set.
 follow_dict = dict()
 
+non_ts = grammar[~grammar.index.duplicated(keep='first')].index
+
 
 def get_all_formulas(non_t):
     """
@@ -33,7 +35,7 @@ def construct_first():
     """
     Construct all non-terminal symbols and formulas' FIRST(a) array.
     """
-    for non_t in grammar[~grammar.index.duplicated(keep='first')].index:
+    for non_t in non_ts:
         get_first(non_t)
 
     print("====FIRST(a) details====")
@@ -49,7 +51,7 @@ def construct_follow(start_symbol='S'):
 
     :param start_symbol: string, the start symbol of the grammar.
     """
-    for non_t in grammar[~grammar.index.duplicated(keep='first')].index:
+    for non_t in non_ts:
         get_follow(non_t, start_symbol)
 
     print("====FOLLOW(A) details====")
@@ -98,32 +100,32 @@ def get_follow(non_t, start_symbol='S'):
     :return: The non-terminal symbol's all FOLLOW(a) array.
     """
     follow = set()
-    for non_terminal in grammar[~grammar.index.duplicated(keep='first')].index:
+    for non_terminal in non_ts:
         for formula in get_all_formulas(non_terminal):
             formula_list = formula.split(" ")
             if non_t in formula_list:
                 # The specified non-terminal symbol is in formula, then get the index of the symbol.
                 index = formula_list.index(non_t)
-                if not non_t == non_terminal:
-                    if index == len(formula_list) - 1:
+                if index == len(formula_list) - 1:
+                    if not non_t == non_terminal:
                         # If the symbol is in the end of the formula,
                         # then add all FOLLOW(A) to the symbol's FOLLOW set.
                         follow |= get_follow(non_terminal)
+                else:
+                    if formula_list[index + 1].isupper():
+                        # If the follow of the symbol is an non-terminal-symbol,
+                        # add the follow symbol's FIRST(A) to its follow set.
+                        follow |= get_first(formula_list[index + 1])
+                        if 'e' in list(get_all_formulas(formula_list[index + 1])) \
+                                and index == len(formula_list) - 2:
+                            # If the follow of the symbol is the end of the formula and can be inferred to empty,
+                            # add the formula's corresponding non-terminal symbol's FOLLOW()
+                            # to the symbol's FOLLOW set.
+                            follow |= get_follow(non_terminal)
                     else:
-                        if formula_list[index + 1].isupper():
-                            # If the follow of the symbol is an non-terminal-symbol,
-                            # add the follow symbol's FIRST(A) to its follow set.
-                            follow |= get_first(formula_list[index + 1])
-                            if 'e' in list(get_all_formulas(formula_list[index + 1])) \
-                                    and index == len(formula_list) - 2:
-                                # If the follow of the symbol is the end of the formula and can be inferred to empty,
-                                # add the formula's corresponding non-terminal symbol's FOLLOW()
-                                # to the symbol's FOLLOW set.
-                                follow |= get_follow(non_terminal)
-                        else:
-                            # If the follow of the symbol is an terminal-symbol,
-                            # directory add that symbol to its FOLLOW set.
-                            follow.add(formula_list[index + 1])
+                        # If the follow of the symbol is an terminal-symbol,
+                        # directory add that symbol to its FOLLOW set.
+                        follow.add(formula_list[index + 1])
     follow -= {'e'}
     if non_t == start_symbol:
         follow.add('#')
@@ -146,7 +148,7 @@ def construct_map():
 
     # Set the first row of analysis sheet (in python list form)
     an_matrix = [["non-t"] + all_terminal]
-    for non_t in grammar[~grammar.index.duplicated(keep='first')].index:
+    for non_t in non_ts:
         # Initialize every non-terminal symbol's sheet row with all items filled with None.
         row = [None] * len(all_terminal)
         for formula in get_all_formulas(non_t):
@@ -174,7 +176,7 @@ def print_grammar():
     Print out grammar formulas.
     """
     print("====Grammar details====")
-    for non_t in grammar.index:
+    for non_t in non_ts:
         formulas = get_all_formulas(non_t)
         print("{0:2}-> {1:}".format(non_t, "|".join(list(formulas))))
     print()
